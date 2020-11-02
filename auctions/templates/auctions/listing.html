@@ -1,0 +1,91 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div class="card_listing d-flex justify-content-center">
+    <div class="card bord" style="max-width: 1000px;">
+        <div class="row no-gutters">
+            <div class="col-md-5 bord">
+              {% if listing.image_url %}
+                <img class="card-img-top h-100 bord" src="{{ listing.image_url }}" alt="No Image Provided">
+              {% else %}
+                <img class="card-img-top h-100 bord" src="{% static 'nophoto.png' %}" alt="No photo available">
+              {% endif %}
+              </div>
+              <div class="col-md-7 bg-dark bord">
+                  <div class="card-body">
+                      <h5 class="card-title"><strong>{{listing.title}}</strong></h5>
+                      <p class="card-text">{{listing.description}}</p>
+                      <p>Category: {{listing.category}}</p>
+                      <p>Listed By: {{listing.owner}}</p>
+                      <p>Starting Price: ${{listing.initial_bid}}</p>
+                      <p>Current Price: ${{listing.max_bid}}</p>
+                      {% if listing.status %}   
+                          {% if user == listing.owner %}
+                          <form method="POST" action="{% url 'close' listing.id %}">
+                            {% csrf_token %}
+                            <input class="btn boton" type="submit" value="Close">
+                          </form>
+                          {% else %}
+                          <form method="POST" action="{% url 'listing' listing.id %}">
+                              {% csrf_token %}
+                          <div class="input-group-prepend">
+                            <label class="input-group-text">$</label>
+                            <input class="input-group-prepend" autofocus type="number" oninput="check(this)" name="newbid" placeholder="Your bid" required>
+                          </div>
+                          <input class="btn boton" type="submit" value="Place Bid">
+                          </form>
+                          <script>
+                            function check(input) {
+                              if (input.value <= {{listing.max_bid}} ) {
+                                input.setCustomValidity('The bid must be greater than {{listing.max_bid}}');
+                              } else {
+                                input.setCustomValidity('');
+                              }
+                            }
+                           </script>
+                          {% if watchlist %}
+                          <form method="POST" action="{% url 'alterwatch' listing.id %}">
+                            {% csrf_token %}
+                            <input class="btn boton" type="submit" value="Remove from Watchlist">
+                          </form>
+                          {% else %}
+                          <form method="POST" action="{% url 'alterwatch' listing.id %}">
+                            {% csrf_token %}
+                            <input class="btn boton" type="submit" value="Add to Watchlist">
+                          </form>
+                          {% endif %}
+                          {% endif %}
+                    {% else %}
+                          {% if winner is None %}
+                          <h4>Item Unsold! No one Won</h4>
+                          {% else %}
+                          <h4>Item Sold!!!</h4>
+                          <h3>Winner is {{winner}}</h3>
+                          <p>Congratulations!</p>
+                          {% endif %}
+                    {% endif %}
+                  </div>
+              </div>
+          </div>
+     </div>
+  </div>
+  <br><br>
+  <h2>Comments</h2>
+  <hr>
+  {% if comments %}
+  <ul>
+    {% for comment in comments %}
+
+    <li>{{comment.user}} says: {{comment.comment}}</li> 
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <form method="POST" action="{% url 'comment' listing.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <textarea class="form-control" autofocus name="comment" rows="3" placeholder="Comments" required></textarea>
+    </div>
+    <input class="btn boton" type="submit" value="Add Comment">
+  </form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+    {% if watchlist %}
+        <h2>Watchlist</h2>
+        <div class="row mx-auto">
+        {% for listing in watchlist %}
+        <div class="card bg-dark mx-auto cardStyle">
+          {% if listing.image_url %}
+            <img class="card-img-top imgStyle" src="{{ listing.image_url }}" alt="Image">
+          {% else %}
+            <img class="card-img-top imgStyle" src="{% static 'nophoto.png' %}" alt="nophoto">
+          {% endif %}
+          <div class="card-body">
+          <h5 class="card-title">{{listing.title}}</h5>
+          <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-dark">{{listing.description}}</li>
+             {% if listing.category %} 
+              <li class="list-group-item bg-dark">Category: {{listing.category}}</li>
+              {% endif %}
+               <li class="list-group-item bg-dark">Current Price: ${{listing.max_bid}}</li>
+          </ul>
+          <form method="GET" action="{% url 'listing' listing.id %}">
+            <input class="btn boton" type="submit" value="View">
+          </form>
+          </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <h2>Your watchlist is empty, go to <a class="navItem" href="{% url 'index' %}">auctions</a> and check the available items</h2> 
+    {% endif %}
+{% endblock %}
