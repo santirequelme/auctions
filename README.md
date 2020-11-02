@@ -37,4 +37,4 @@ Complete the implementation of your auction site. You must fulfill the following
     ````
 
 # Watch this project in action 
-(https://www.youtube.com/watch?v=2lOgsGn6Jmg&t=64s)
+(https://youtu.be/2lOgsGn6Jmg)
