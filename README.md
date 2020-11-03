@@ -28,9 +28,7 @@ Complete the implementation of your auction site. You must fulfill the following
     ````
     python -m pip install Django
     ````
-    ````
-    pip3 install markdown2
-    ````
+
 * In the root folder, execute 
     ````
     python manage.py runserver"
